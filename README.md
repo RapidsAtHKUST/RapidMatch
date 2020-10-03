@@ -19,7 +19,7 @@ for filtering and join plan generation. Consequently, it outperforms the
 state of the art in both approaches on a wide range of query workloads.
 
 For the details, please refer to our VLDB'2021 paper
-"RapidMatch: A Holistic Approach to Subgraph Query Processing"
+"RapidMatch: A Holistic Approach to Subgraph Query Processing [TO APPEAR AT VLDB'2021]"
 by [Shixuan Sun](https://github.com/shixuansun), [Xibo Sun](https://github.com/xibosun), [Yulin Che](https://github.com/CheYulin),
 [Prof. Qiong Luo](http://www.cse.ust.hk/~luo/), and [Prof. Bingsheng He](https://www.comp.nus.edu.sg/~hebs/).
 If you have any further questions, please feel free to contact us.
@@ -27,7 +27,7 @@ If you have any further questions, please feel free to contact us.
 Please cite our paper, if you use our source code.
 
 * "Shixuan Sun, Xibo Sun, Yulin Che, Qiong Luo, and Bingsheng He. RapidMatch: A Holistic Approach to Subgraph
-Query Processing. To appear at VLDB 2021."
+Query Processing. VLDB 2021."
 
 
 ## Compile
