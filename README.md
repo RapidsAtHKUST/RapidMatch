@@ -117,6 +117,7 @@ and result types (Homomorphism, Isomorphism) by defining macros in
 |FAILING_SET_PRUNING| Enable the failing set pruning method|
 |INTERSECTION_CACHE| Enable the intersection caching method|
 |HOMOMORPHISM| Find the subgraph homomorphisms|
+
 In our paper, we execute the large queries with the following configuration, which is the default setting. We set
 the time limit as 300 seconds (5 minutes) and the number of embeddings as 100000.
 
