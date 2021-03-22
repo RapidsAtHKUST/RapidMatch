@@ -129,7 +129,8 @@ the time limit as 300 seconds (5 minutes) and the number of embeddings as 100000
 |FAILING_SET_PRUNING| Enable the failing set pruning method|
 
 We execute the small queries with the following configuration. We set the time limit as 86400 seconds (24 hours) and the number
-of embeddings as MAX.
+of embeddings as MAX. **Note that when finding homomorphisms, you need to disable the failing set pruning technique by commenting out "FAILING_SET_PRUNING" in config.h because this optimization is based on the definition of isomorphism.**
+
 
 | Macro | Description |
 | :-----------------------------------------------: |  :-------------: |
