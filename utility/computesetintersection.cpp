@@ -373,7 +373,7 @@ void ComputeSetIntersection::ComputeCNMergeBasedAVX2(const VertexID* larray, con
                     u_elements = _mm256_set1_epi32(larray[li]);
                 }
             }
-            _mm256_store_si256((__m256i *) cn_countv, sse_cn_countv);
+            _mm256_storeu_si256((__m256i *) cn_countv, sse_cn_countv);
             for (int cn_countvplus : cn_countv) { cn_count += cn_countvplus; }
         }
     } else {
