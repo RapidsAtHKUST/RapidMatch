@@ -46,20 +46,7 @@ void output_embedding(const std::string& path, uint32_t *matching_order, uint32_
     // output the size of the embeddings.
     embedding_file.write(reinterpret_cast<const char *>(&embedding_count), sizeof(uint64_t));
 
-    for (uint32_t i = 0; i < order_length; ++i) {
-        std::cout << matching_order[i] << ' ';
-    }
-    std::cout << '\n';
     embedding_file.write(reinterpret_cast<const char *>(matching_order), order_size);
-
-    for (uint32_t i = 0; i < embedding_count; ++i) {
-        uint32_t* embedding = embeddings + i * order_length;
-
-        for (uint32_t j = 0; j < order_length; ++j) {
-            std::cout << embedding[j] <<' ';
-        }
-        std::cout <<'\n';
-    }
 
     embedding_file.write(reinterpret_cast<const char *>(embeddings), embedding_size);
 }
