@@ -62,4 +62,7 @@
 
 #define NANOSECTOSEC(elapsed_time) ((elapsed_time)/(double)1000000000)
 
+// #define ENABLE_OUTPUT
+#define OUTPUT_RESULT_NUM_LIMIT (1024 * 1024)
+
 #endif //SUBGRAPHMATCHING_CONFIG_H

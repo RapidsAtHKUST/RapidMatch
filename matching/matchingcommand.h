@@ -22,7 +22,8 @@ enum OptionKeyword {
     CSRFilePath = 14,                    // -csr, The input csr file path
     ImportPlanPath = 15,                  // -import, The input path of the query plan.
     InputOrder = 16,                       // -input_order, The input manual order.
-    EnablePreprocessor = 17                // -preprocess, Enable the preprocessor.
+    EnablePreprocessor = 17,                // -preprocess, Enable the preprocessor.
+    OutputPath = 18                         // -output_path, The path of outputing results.
 };
 
 class MatchingCommand : public CommandParser{
@@ -105,6 +106,10 @@ public:
 
     std::string getPreprocessor() {
         return options_value[OptionKeyword::EnablePreprocessor] == "" ? "true" : options_value[OptionKeyword::EnablePreprocessor];
+    }
+
+    std::string getOutputPath() {
+        return options_value[OptionKeyword::OutputPath] == "" ? "embeddings.bin" : options_value[OptionKeyword::OutputPath];
     }
 };
 

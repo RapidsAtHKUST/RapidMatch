@@ -6,6 +6,11 @@
 #include "../relation/flat_relation.h"
 #include <bitset>
 class leapfrogtriejoin {
+
+#ifdef ENABLE_OUTPUT
+    uint32_t* current_position_;
+#endif
+
 public:
     uint64_t* set_intersection_count_;
     uint64_t* set_intersection_cost_;

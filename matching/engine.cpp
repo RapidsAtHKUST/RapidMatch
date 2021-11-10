@@ -32,6 +32,38 @@ void execute_within_time_limit(execution_tree* tree, catalog* catalog, uint64_t 
     } while (status != std::future_status::ready);
 }
 
+void output_embedding(const std::string& path, uint32_t *matching_order, uint32_t order_length,
+                      uint32_t *embeddings, uint64_t embedding_count) {
+    std::cout << "Embedding Number Limit: " << OUTPUT_RESULT_NUM_LIMIT << std::endl;
+    std::cout << "Number of Embeddings Dumped to File: " << embedding_count << std::endl;
+
+    std::ofstream embedding_file(path, std::ios::binary);
+
+    uint32_t order_size = order_length * sizeof(uint32_t);
+    uint64_t embedding_size = embedding_count * order_length * sizeof(uint32_t);
+    // Output the size of the matching order.
+    embedding_file.write(reinterpret_cast<const char *>(&order_length), sizeof(uint32_t));
+    // output the size of the embeddings.
+    embedding_file.write(reinterpret_cast<const char *>(&embedding_count), sizeof(uint64_t));
+
+    for (uint32_t i = 0; i < order_length; ++i) {
+        std::cout << matching_order[i] << ' ';
+    }
+    std::cout << '\n';
+    embedding_file.write(reinterpret_cast<const char *>(matching_order), order_size);
+
+    for (uint32_t i = 0; i < embedding_count; ++i) {
+        uint32_t* embedding = embeddings + i * order_length;
+
+        for (uint32_t j = 0; j < order_length; ++j) {
+            std::cout << embedding[j] <<' ';
+        }
+        std::cout <<'\n';
+    }
+
+    embedding_file.write(reinterpret_cast<const char *>(embeddings), embedding_size);
+}
+
 int main(int argc, char** argv) {
     MatchingCommand command(argc, argv);
     std::string input_query_graph_file = command.getQueryGraphFilePath();
@@ -45,6 +77,7 @@ int main(int argc, char** argv) {
     std::string input_import_plan_path = command.getImportPlanPath();
     std::string input_order = command.getInputOrder();
     std::string input_enable_preprocessor = command.getPreprocessor();
+    std::string input_output_path = command.getOutputPath();
     /**
      * Output the command line information.
      */
@@ -60,6 +93,9 @@ int main(int argc, char** argv) {
     std::cout << "\tOrder Num: " << input_order_num << std::endl;
     std::cout << "\tInput Order: " << input_order << std::endl;
     std::cout << "\tEnable Preprocessor: " << input_enable_preprocessor << std::endl;
+#ifdef ENABLE_OUTPUT
+    std::cout << "\tOutput Path: " << input_output_path << std::endl;
+#endif
     std::cout << "--------------------------------------------------------------------" << std::endl;
 
     /**
@@ -130,6 +166,7 @@ int main(int argc, char** argv) {
     bool enable_sparsebp = false;
     std::cout << "\tSparse Bitmap: Disabled" << std::endl;
 #endif
+
     std::cout << "--------------------------------------------------------------------" << std::endl;
     /**
      * Load input graphs.
@@ -158,6 +195,9 @@ int main(int argc, char** argv) {
 
     double load_graphs_time_in_ns = std::chrono::duration_cast<std::chrono::nanoseconds>(end - start).count();
 
+#ifdef ENABLE_OUTPUT
+    output_buffer = new uint32_t[OUTPUT_RESULT_NUM_LIMIT * (uint64_t)query_graph->getVerticesCount()];
+#endif
     std::cout << "-----" << std::endl;
     std::cout << "Query Graph Meta Information" << std::endl;
     query_graph->printGraphMetaData();
@@ -322,6 +362,13 @@ int main(int argc, char** argv) {
         delete tree;
     }
 
+#ifdef ENABLE_OUTPUT
+    std::cout << "Dump results to file..." << std::endl;
+    output_embedding(input_output_path, spectrum[0].data(), spectrum[0].size(),
+                     output_buffer, embedding_count);
+    delete[] output_buffer;
+#endif
+
     std::cout << "--------------------------------------------------------------------" << std::endl;
     std::cout << "Release memories..." << std::endl;
     /**
@@ -342,6 +389,7 @@ int main(int argc, char** argv) {
     printf("Load graphs time (seconds): %.6lf\n", NANOSECTOSEC(load_graphs_time_in_ns));
     printf("Query time (seconds): %.6lf\n", NANOSECTOSEC(query_time));
     printf("#Embeddings: %zu\n", embedding_count);
+
     std::cout << "End." << std::endl;
     return 0;
 }

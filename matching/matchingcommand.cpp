@@ -20,6 +20,7 @@ MatchingCommand::MatchingCommand(const int argc, char **argv) : CommandParser(ar
     options_key[OptionKeyword::ImportPlanPath] = "-import";
     options_key[OptionKeyword::InputOrder] = "-input_order";
     options_key[OptionKeyword::EnablePreprocessor] = "-preprocess";
+    options_key[OptionKeyword::OutputPath] = "-output_path";
     processOptions();
 };
 
@@ -77,4 +78,7 @@ void MatchingCommand::processOptions() {
 
     // Enable preprocessor.
     options_value[OptionKeyword::EnablePreprocessor] = getCommandOption(options_key[OptionKeyword::EnablePreprocessor]);
+
+    // Enable output path.
+    options_value[OptionKeyword::OutputPath] = getCommandOption(options_key[OptionKeyword::OutputPath]);
 }

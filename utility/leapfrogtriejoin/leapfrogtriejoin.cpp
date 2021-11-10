@@ -173,7 +173,20 @@ uint64_t leapfrogtriejoin::execute() {
 #ifndef COUNT_RESULTS
                             last_level_candidates_[j] = temp_v;
 #endif
+
+#ifdef ENABLE_OUTPUT
+                            if (count_ < OUTPUT_RESULT_NUM_LIMIT) {
+                                embedding_[cur_depth + 1] = temp_v;
+                                memcpy(current_position_, embedding_, num_vertex_ * sizeof(uint32_t));
+                                current_position_ += num_vertex_;
+                            }
+                            else {
+                                return true;
+                            }
+#endif
+
                             count_ += 1;
+
                             //   if (materialize_) { output_->push_back(embedding_);}
                         }
 #endif
@@ -367,7 +380,20 @@ bool leapfrogtriejoin::enumerate_non_core_results(uint32_t start_depth, uint32_t
 #ifndef COUNT_RESULTS
                 last_level_candidates_[j] = temp_buffer[j];
 #endif
+
+#ifdef ENABLE_OUTPUT
+                if (count_ < OUTPUT_RESULT_NUM_LIMIT) {
+                    embedding_[cur_depth] = temp_buffer[j];
+                    memcpy(current_position_, embedding_, num_vertex_ * sizeof(uint32_t));
+                    current_position_ += num_vertex_;
+                }
+                else {
+                    return true;
+                }
+#endif
                 count_ += 1;
+
+
             }
 #endif
 
@@ -464,6 +490,18 @@ bool leapfrogtriejoin::enumerate_non_core_results(uint32_t start_depth, uint32_t
 #ifndef COUNT_RESULTS
                             last_level_candidates_[j] = temp_buffer[j];
 #endif
+
+#ifdef ENABLE_OUTPUT
+                            if (count_ < OUTPUT_RESULT_NUM_LIMIT) {
+                                embedding_[cur_depth + 1] = temp_buffer[j];
+                                memcpy(current_position_, embedding_, num_vertex_ * sizeof(uint32_t));
+                                current_position_ += num_vertex_;
+                            }
+                            else {
+                                return true;
+                            }
+#endif
+
                             count_ += 1;
                         }
 
@@ -995,6 +1033,10 @@ void leapfrogtriejoin::initialize() {
     if (output_ != nullptr) {
         materialize_ = true;
     }
+
+#ifdef ENABLE_OUTPUT
+    current_position_ = output_buffer;
+#endif
 }
 
 void leapfrogtriejoin::clear() {

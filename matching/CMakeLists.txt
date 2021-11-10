@@ -15,4 +15,5 @@ set(ENGINE_FILE_LIST
         query_plan_generator.h)
 
 add_executable(RapidMatch.out ${ENGINE_FILE_LIST})
+add_executable(Playground.out playground.cpp)
 target_link_libraries(RapidMatch.out graph utility nd)
