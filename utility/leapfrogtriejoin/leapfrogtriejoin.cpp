@@ -139,6 +139,18 @@ uint64_t leapfrogtriejoin::execute() {
 
                         for (uint32_t x = 0; x < loop_count; ++x) {
                             last_level_candidates_[x] = temp_buffer[x];
+
+#ifdef ENABLE_OUTPUT
+                            if (count_ < OUTPUT_RESULT_NUM_LIMIT) {
+                                embedding_[cur_depth + 1] = temp_buffer[x];
+                                memcpy(current_position_, embedding_, num_vertex_ * sizeof(uint32_t));
+                                current_position_ += num_vertex_;
+                            }
+                            else {
+                                return true;
+                            }
+#endif
+
                             count_ += 1;
                         }
 #else
@@ -353,7 +365,26 @@ bool leapfrogtriejoin::enumerate_non_core_results(uint32_t start_depth, uint32_t
 #endif
         if (cur_depth == max_depth - 1) {
 #if defined(HOMOMORPHISM) && defined(OUTPUT_OPTIMIZATION)
+
+#ifdef ENABLE_OUTPUT
+            uint32_t temp_count = num_local_candidates_[cur_depth];
+            uint32_t* temp_buffer = local_candidates_[cur_depth];
+            for (uint32_t j = 0; j < temp_count; ++j) {
+                if (count_ < OUTPUT_RESULT_NUM_LIMIT) {
+                    embedding_[cur_depth] = temp_buffer[j];
+                    memcpy(current_position_, embedding_, num_vertex_ * sizeof(uint32_t));
+                    current_position_ += num_vertex_;
+                }
+                else {
+                    return true;
+                }
+                count_ += 1;
+            }
+
+#else
             count_ += num_local_candidates_[cur_depth];
+#endif
+
 #else
             uint32_t temp_count = num_local_candidates_[cur_depth];
             uint32_t* temp_buffer = local_candidates_[cur_depth];
@@ -920,7 +951,12 @@ uint32_t leapfrogtriejoin::compute_local_candidates(uint32_t depth) {
 
 #if defined(HOMOMORPHISM) && defined(OUTPUT_OPTIMIZATION) && RELATION_STRUCTURE == 0
     if (depth == num_vertex_ - 1) {
+
+#ifdef INTERSECTION_CACHE
         if (recompute) {
+#else
+        {
+#endif
             uint32_t last_vertex = vertex_ordering_[num_vertex_ - 1];
             uint32_t* last_vertex_candidate_sets = catalog_->candidate_sets_[last_vertex];
             uint32_t* temp_buffer = local_candidates_[depth];
